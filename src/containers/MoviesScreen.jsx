@@ -1,55 +1,83 @@
-import React, { Component } from "react";
-import PropTypes from "prop-types";
-import { connect, ReactReduxContext } from "react-redux";
-import { bindActionCreators } from "redux";
+import React from 'react';
+import PropTypes from 'prop-types';
+import { connect, ReactReduxContext } from 'react-redux';
+import { bindActionCreators } from 'redux';
 
-import fetchMoviesAction from "../store/movies/fetchMovies";
-import {
-  getMoviesError,
-  getMovies,
-  getMoviesPending
-} from "../store/movies/reducer";
+import { fetchMovies, fetchGenres } from '../store/movies/fetchMovies';
+import { getMoviesError, getMovies, getMoviesPending } from '../store/movies/reducer';
 
 // import LoadingSpinner from "./LoadingSpinner";
-// import MovieList from "./MovieList";
+import MovieList from './MovieList';
+import SearchPanel from './SearchPanel';
 
-import { Button, Input } from "./style.js";
+const initialState = {
+  query: '',
+  genre: ''
+};
 
-const MovieScreen = ({ fetchMovies, movies, error, pending }) => {
-  const [searchValue, setSearchValue] = React.useState("");
-
-  console.log('MovieScreen-movies', movies);
-  
+const MovieScreen = ({
+  fetchMovies,
+  fetchGenres,
+  totalPages,
+  currentPage,
+  movies,
+  error,
+  pending,
+  genres
+}) => {
+  const [searchValue, setSearchValue] = React.useState(initialState);
+  // const [genres, setGenres] = React.useState('');
 
   React.useEffect(() => {
-    fetchMovies(searchValue);
-  }, [searchValue]);
+    fetchGenres();
+  }, []);
 
-  const handleSearch = event => {
-    event.preventDefault();
-    const { name, value } = event.currentTarget.name;
-    setSearchValue(value);
+  const onHandleSearch = event => {
+    const { name, value } = event.currentTarget;
+
+    setSearchValue({ ...searchValue, query: value });
   };
 
-  return pending ? (
-    <div>Loading</div>
-  ) : (
+  const onHandleSubmit = event => {
+    event.preventDefault();
+    console.log('searchValue --------------', searchValue);
+
+    fetchMovies(searchValue.query, 1, searchValue.genre);
+  };
+
+  const onHandleSelectGenre = event => {
+    const { name, value } = event.currentTarget;
+    setSearchValue({ ...searchValue, genre: value });
+
+    // fetchMovies(searchValue);
+  };
+
+  const onHandleFetchMovies = page => {
+    fetchMovies(searchValue, page);
+  };
+
+  return (
     <div className="movie-list-wrapper">
       {error && <span className="movie-list-error">{error}</span>}
-      {/* <MovieList movies={movies} /> */}
-      <form onSubmit={handleSearch}>
-        <Input type="text" name="name" />
-        <Button type="submit">Search</Button>
-      </form>
+
+      <SearchPanel
+        handleSubmit={onHandleSubmit}
+        handleSearch={onHandleSearch}
+        handleSelectGenre={onHandleSelectGenre}
+        genres={genres}
+      />
 
       <div>
-        {movies && movies.length
-          ? movies.map((item, index) => {
-              console.log("item", item);
-
-              return <div key={index}>{item.title}</div>;
-            })
-          : "Enter your query"}
+        {movies && movies.length ? (
+          <MovieList
+            movies={movies}
+            handleFetchMovies={onHandleFetchMovies}
+            totalPages={totalPages}
+            currentPage={currentPage}
+          />
+        ) : (
+          'Enter your query'
+        )}
       </div>
     </div>
   );
@@ -59,20 +87,18 @@ const mapStateToProps = state => {
   return {
     error: state.moviesReducer.error,
     movies: state.moviesReducer.movies,
-    pending: state.moviesReducer.pending
+    pending: state.moviesReducer.pending,
+    totalPages: state.moviesReducer.totalPages,
+    currentPage: state.moviesReducer.currentPage,
+    genres: state.moviesReducer.genres
   };
 };
-
-// const mapStateToProps = state => ({
-//   error: getMoviesError(state),
-//   movies: getMovies(state),
-//   pending: getMoviesPending(state)
-// });
 
 const mapDispatchToProps = dispatch =>
   bindActionCreators(
     {
-      fetchMovies: fetchMoviesAction
+      fetchMovies: fetchMovies,
+      fetchGenres: fetchGenres
     },
     dispatch
   );
