@@ -26,34 +26,19 @@ const MovieScreen = ({
   genres
 }) => {
   const [searchValue, setSearchValue] = React.useState(initialState);
-  // const [genres, setGenres] = React.useState('');
 
   React.useEffect(() => {
     fetchGenres();
   }, []);
 
-  const onHandleSearch = event => {
-    const { name, value } = event.currentTarget;
-
-    setSearchValue({ ...searchValue, query: value });
-  };
-
-  const onHandleSubmit = event => {
+  const onHandleSubmit = (event, query) => {
     event.preventDefault();
-    console.log('searchValue --------------', searchValue);
-
-    fetchMovies(searchValue.query, 1, searchValue.genre);
-  };
-
-  const onHandleSelectGenre = event => {
-    const { name, value } = event.currentTarget;
-    setSearchValue({ ...searchValue, genre: value });
-
-    // fetchMovies(searchValue);
+    setSearchValue(query)
+    fetchMovies(query.title, 1, query.genre, query.dateOrder);
   };
 
   const onHandleFetchMovies = page => {
-    fetchMovies(searchValue, page);
+    fetchMovies(searchValue.title, page);
   };
 
   return (
@@ -62,8 +47,6 @@ const MovieScreen = ({
 
       <SearchPanel
         handleSubmit={onHandleSubmit}
-        handleSearch={onHandleSearch}
-        handleSelectGenre={onHandleSelectGenre}
         genres={genres}
       />
 

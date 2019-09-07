@@ -33,8 +33,7 @@ export const moviesReducer = (state = initialState, action) => {
         pending: false,
         movies: [ ...state.movies, ...action.movies],
         totalPages: action.total_pages,
-        currentPage: action.currentPage,
-        posterPath: action.posterPath,
+        currentPage: action.currentPage
       };
     case FETCH_MOVIES_ERROR:
       return {
