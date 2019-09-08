@@ -11,8 +11,9 @@ import MovieList from './MovieList';
 import SearchPanel from './SearchPanel';
 
 const initialState = {
-  query: '',
-  genre: ''
+  title: '',
+  genre: '',
+  dateOrder: 'desc'
 };
 
 const MovieScreen = ({
@@ -38,7 +39,7 @@ const MovieScreen = ({
   };
 
   const onHandleFetchMovies = page => {
-    fetchMovies(searchValue.title, page);
+    fetchMovies(searchValue.title, page, searchValue.genre, searchValue.dateOrder);
   };
 
   return (
