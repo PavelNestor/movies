@@ -4,18 +4,21 @@ import {
   fetchMoviesError,
   fetchGenresPending,
   fetchGenresSuccess,
-  fetchGenresError
+  fetchGenresError,
+  clearStateSuccess
 } from "./actions";
 
-function fetchMovies(query = '', page = 1, genre = '', dateOrder = 'desc') {
+function fetchMovies(query = '', page = 1, genre = '', sortBy = '&sort_by=release_date.desc', ratingOrder = '') {
   let url = '';
 
   if (query !== '') {
-    url = `https://api.themoviedb.org/3/search/movie?include_adult=false&page=${page}&language=en-US&query=${query}&api_key=6563b97fda57eb1e67c17820ade05783`;
+    url = `https://api.themoviedb.org/3/search/movie?include_adult=false&page=${page}&language=en-US&query=${query}&sort_by=release_date.desc&api_key=6563b97fda57eb1e67c17820ade05783`;
   } else {
-    url = `https://api.themoviedb.org/3/discover/movie?with_genres=${genre}&page=${page}&sort_by=release_date.${dateOrder}&include_adult=false&sort_by=popularity.desc&language=en-US&api_key=6563b97fda57eb1e67c17820ade05783`
+    url = `https://api.themoviedb.org/3/discover/movie?page=${page}${genre}&include_adult=false${sortBy}&language=en-US&api_key=6563b97fda57eb1e67c17820ade05783`
   }
 
+  console.log('URL',url);
+  
   return dispatch => {
     dispatch(fetchMoviesPending());
     fetch(
@@ -23,8 +26,8 @@ function fetchMovies(query = '', page = 1, genre = '', dateOrder = 'desc') {
     )
       .then(res => res.json())
       .then(res => {
-
         if (res.error) {
+          
           throw res.error;
         }
         dispatch(fetchMoviesSuccess(res));
@@ -37,7 +40,6 @@ function fetchMovies(query = '', page = 1, genre = '', dateOrder = 'desc') {
 }
 
 function fetchGenres() {
-  debugger
   return dispatch => {
     dispatch(fetchGenresPending());
     fetch(
@@ -58,5 +60,9 @@ function fetchGenres() {
   };
 }
 
+function clearState() {
+  return dispatch => dispatch(clearStateSuccess());
+}
 
-export { fetchMovies, fetchGenres };
+
+export { fetchMovies, fetchGenres, clearState };

@@ -14,7 +14,7 @@ import "./index.css";
 const store = createStore(combineReducers(reducers), applyMiddleware(thunk));
 
 ReactDOM.render(
-  <Provider store={store} test={console.log("ReactDOM")}>
+  <Provider store={store}>
     <App />
   </Provider>,
   document.getElementById("root")

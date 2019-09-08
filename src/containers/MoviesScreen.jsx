@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { connect, ReactReduxContext } from 'react-redux';
 import { bindActionCreators } from 'redux';
 
-import { fetchMovies, fetchGenres } from '../store/movies/fetchMovies';
+import { fetchMovies, fetchGenres, clearState } from '../store/movies/fetchMovies';
 import { getMoviesError, getMovies, getMoviesPending } from '../store/movies/reducer';
 
 // import LoadingSpinner from "./LoadingSpinner";
@@ -13,7 +13,8 @@ import SearchPanel from './SearchPanel';
 const initialState = {
   title: '',
   genre: '',
-  dateOrder: 'desc'
+  dateOrder: '',
+  ratingOrder: ''
 };
 
 const MovieScreen = ({
@@ -21,40 +22,46 @@ const MovieScreen = ({
   fetchGenres,
   totalPages,
   currentPage,
+  clearState,
   movies,
   error,
   pending,
   genres
 }) => {
   const [searchValue, setSearchValue] = React.useState(initialState);
+  const [isFetching, setIsFetching] = React.useState(pending);
+  const [moviesLsit, setMoviesList] = React.useState(movies);
 
   React.useEffect(() => {
     fetchGenres();
   }, []);
 
+  React.useEffect(() => {
+    setMoviesList([...movies]);
+  }, [movies]);
+
   const onHandleSubmit = (event, query) => {
     event.preventDefault();
-    setSearchValue(query)
-    fetchMovies(query.title, 1, query.genre, query.dateOrder);
+    clearState();
+    setSearchValue(query);
+    fetchMovies(query.title, 1, query.genre, query.sortBy);
+    // setMoviesList(movies);
   };
 
   const onHandleFetchMovies = page => {
-    fetchMovies(searchValue.title, page, searchValue.genre, searchValue.dateOrder);
+    fetchMovies(searchValue.title, page, searchValue.genre, searchValue.sortBy);
   };
 
   return (
     <div className="movie-list-wrapper">
       {error && <span className="movie-list-error">{error}</span>}
 
-      <SearchPanel
-        handleSubmit={onHandleSubmit}
-        genres={genres}
-      />
+      <SearchPanel handleSubmit={onHandleSubmit} genres={genres} />
 
       <div>
-        {movies && movies.length ? (
+        {moviesLsit && moviesLsit.length ? (
           <MovieList
-            movies={movies}
+            movies={moviesLsit}
             handleFetchMovies={onHandleFetchMovies}
             totalPages={totalPages}
             currentPage={currentPage}
@@ -82,7 +89,8 @@ const mapDispatchToProps = dispatch =>
   bindActionCreators(
     {
       fetchMovies: fetchMovies,
-      fetchGenres: fetchGenres
+      fetchGenres: fetchGenres,
+      clearState: clearState
     },
     dispatch
   );

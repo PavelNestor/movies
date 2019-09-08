@@ -4,13 +4,15 @@ import {
   FETCH_MOVIES_ERROR,
   FETCH_GENRES_PENDING,
   FETCH_GENRES_SUCCESS,
-  FETCH_GENRES_ERROR
+  FETCH_GENRES_ERROR,
+  CLEAR_STATE
 } from "./actions";
 
 const initialState = {
-  pending: false,
-  movies: [],
   error: null,
+  genres: '',
+  movies: [],
+  pending: false,
   total_pages: 0,
   total_results: 0
 };
@@ -18,8 +20,6 @@ const initialState = {
 export const moviesReducer = (state = initialState, action) => {
   console.log('moviesReducer => state ', state);
   console.log('moviesReducer => action ', action);
-  console.log('moviesReducer => action.movies ', action.movies);
-  console.log('moviesReducer => action.total_pages ', action.total_pages);
   
   switch (action.type) {
     case FETCH_MOVIES_PENDING:
@@ -28,6 +28,8 @@ export const moviesReducer = (state = initialState, action) => {
         pending: true
       };
     case FETCH_MOVIES_SUCCESS:
+      console.log('action.results', action.movies);
+      
       return {
         ...state,
         pending: false,
@@ -57,6 +59,11 @@ export const moviesReducer = (state = initialState, action) => {
         ...state,
         pending: false,
         error: action.error
+      };
+    case CLEAR_STATE:
+      return {
+        ...initialState,
+        genres: [...state.genres]
       };
     default:
       return state;
