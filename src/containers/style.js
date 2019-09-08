@@ -30,3 +30,11 @@ export const Button = styled.button`
   padding: 0.25em 1em;
   transition: 0.5s all ease-out;
 `;
+
+export const ListItem = styled.div`
+  cursor: pointer;
+  background: red;
+  font-size: 16px;
+  color: white;
+  padding: 3rem;
+`;

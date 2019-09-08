@@ -1,55 +1,74 @@
-import React, { Component } from "react";
-import PropTypes from "prop-types";
-import { connect, ReactReduxContext } from "react-redux";
-import { bindActionCreators } from "redux";
+import React from 'react';
+import PropTypes from 'prop-types';
+import { connect, ReactReduxContext } from 'react-redux';
+import { bindActionCreators } from 'redux';
 
-import fetchMoviesAction from "../store/movies/fetchMovies";
-import {
-  getMoviesError,
-  getMovies,
-  getMoviesPending
-} from "../store/movies/reducer";
+import { fetchMovies, fetchGenres, clearState } from '../store/movies/fetchMovies';
+import { getMoviesError, getMovies, getMoviesPending } from '../store/movies/reducer';
 
 // import LoadingSpinner from "./LoadingSpinner";
-// import MovieList from "./MovieList";
+import MovieList from './MovieList';
+import SearchPanel from './SearchPanel';
 
-import { Button, Input } from "./style.js";
+const initialState = {
+  title: '',
+  genre: '',
+  dateOrder: '',
+  ratingOrder: ''
+};
 
-const MovieScreen = ({ fetchMovies, movies, error, pending }) => {
-  const [searchValue, setSearchValue] = React.useState("");
-
-  console.log('MovieScreen-movies', movies);
-  
+const MovieScreen = ({
+  fetchMovies,
+  fetchGenres,
+  totalPages,
+  currentPage,
+  clearState,
+  movies,
+  error,
+  pending,
+  genres
+}) => {
+  const [searchValue, setSearchValue] = React.useState(initialState);
+  const [isFetching, setIsFetching] = React.useState(pending);
+  const [moviesLsit, setMoviesList] = React.useState(movies);
 
   React.useEffect(() => {
-    fetchMovies(searchValue);
-  }, [searchValue]);
+    fetchGenres();
+  }, []);
 
-  const handleSearch = event => {
+  React.useEffect(() => {
+    setMoviesList([...movies]);
+  }, [movies]);
+
+  const onHandleSubmit = (event, query) => {
     event.preventDefault();
-    const { name, value } = event.currentTarget.name;
-    setSearchValue(value);
+    clearState();
+    setSearchValue(query);
+    fetchMovies(query.title, 1, query.genre, query.sortBy);
+    // setMoviesList(movies);
   };
 
-  return pending ? (
-    <div>Loading</div>
-  ) : (
+  const onHandleFetchMovies = page => {
+    fetchMovies(searchValue.title, page, searchValue.genre, searchValue.sortBy);
+  };
+
+  return (
     <div className="movie-list-wrapper">
       {error && <span className="movie-list-error">{error}</span>}
-      {/* <MovieList movies={movies} /> */}
-      <form onSubmit={handleSearch}>
-        <Input type="text" name="name" />
-        <Button type="submit">Search</Button>
-      </form>
+
+      <SearchPanel handleSubmit={onHandleSubmit} genres={genres} />
 
       <div>
-        {movies && movies.length
-          ? movies.map((item, index) => {
-              console.log("item", item);
-
-              return <div key={index}>{item.title}</div>;
-            })
-          : "Enter your query"}
+        {moviesLsit && moviesLsit.length ? (
+          <MovieList
+            movies={moviesLsit}
+            handleFetchMovies={onHandleFetchMovies}
+            totalPages={totalPages}
+            currentPage={currentPage}
+          />
+        ) : (
+          'Enter your query'
+        )}
       </div>
     </div>
   );
@@ -59,20 +78,19 @@ const mapStateToProps = state => {
   return {
     error: state.moviesReducer.error,
     movies: state.moviesReducer.movies,
-    pending: state.moviesReducer.pending
+    pending: state.moviesReducer.pending,
+    totalPages: state.moviesReducer.totalPages,
+    currentPage: state.moviesReducer.currentPage,
+    genres: state.moviesReducer.genres
   };
 };
-
-// const mapStateToProps = state => ({
-//   error: getMoviesError(state),
-//   movies: getMovies(state),
-//   pending: getMoviesPending(state)
-// });
 
 const mapDispatchToProps = dispatch =>
   bindActionCreators(
     {
-      fetchMovies: fetchMoviesAction
+      fetchMovies: fetchMovies,
+      fetchGenres: fetchGenres,
+      clearState: clearState
     },
     dispatch
   );
