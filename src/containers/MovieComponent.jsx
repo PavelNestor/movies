@@ -15,7 +15,7 @@ const MovieComponent = ({ movie, scroll }) => {
       <Movie src={generatePosterUrl(movie.poster_path)}>
         <CardHeader>{movie.title}</CardHeader>
         <MoviePoster src={generatePosterUrl(movie.poster_path)} alt={movie.title} />
-        <CardText>{movie.overview}</CardText>
+        <p>{movie.overview}</p>
       </Movie>
     </MovieWrapper>
   );

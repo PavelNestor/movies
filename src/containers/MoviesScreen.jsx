@@ -35,7 +35,7 @@ const MovieScreen = ({
   const [scroll, setScroll] = React.useState(0);
 
   React.useEffect(() => {
-    window.addEventListener('scroll', scrollPosition)
+    window.addEventListener('scroll', scrollPosition);
     return () => scrollPosition;
   });
 
@@ -62,7 +62,7 @@ const MovieScreen = ({
 
   const onHandleClickOnCard = (event, movie) => {
     event.preventDefault();
-    setselectedMovie({...movie})
+    setselectedMovie({ ...movie });
   };
 
   const onHandleFetchMovies = page => {
@@ -77,23 +77,17 @@ const MovieScreen = ({
           <SearchPanel handleSubmit={onHandleSubmit} genres={genres} />
         </Col>
         <Col>
-          <div>
-            {moviesLsit &&
-              <MovieList
-                movies={moviesLsit}
-                handleFetchMovies={onHandleFetchMovies}
-                totalPages={totalPages}
-                currentPage={currentPage}
-                onHandleClickOnCard={onHandleClickOnCard}
-              />
-            }
-          </div>
+          {moviesLsit && (
+            <MovieList
+              movies={moviesLsit}
+              handleFetchMovies={onHandleFetchMovies}
+              totalPages={totalPages}
+              currentPage={currentPage}
+              onHandleClickOnCard={onHandleClickOnCard}
+            />
+          )}
+          {selectedMovie && <MovieComponent movie={selectedMovie} />}
         </Col>
-      </Row>
-      <Row>
-        {selectedMovie &&
-          <MovieComponent movie={selectedMovie} scroll={scroll}/>
-        }
       </Row>
     </PageContent>
   );

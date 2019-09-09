@@ -47,11 +47,15 @@ export const ListItem = styled.div`
   padding: 3rem;
 `;
 
+export const MoviesList = styled.ul`
+  overflow-y: scroll;
+`;
+
 export const SelectWrapper = styled.div`
   border: 1px solid #77abfc;
   border-radius: 3px;
+  display: flex;
   overflow: hidden;
-  background: #fafafa url("img/icon-select.png") no-repeat 90% 50%;
 `;
 
 export const Select = styled.select`
@@ -103,6 +107,7 @@ export const Col = styled.div`
   flex-direction: row;
   flex-basis: 50%;
   padding: 0 1rem;
+  max-height: 100vh;
 `;
 
 export const Card = styled.div`
@@ -178,13 +183,14 @@ export const Movie = styled.div.attrs(props => ({
   display: flex;
   flex-direction: column;
   max-height: 100vh;
+  flex-basis: 50%;
   opacity: .8;
   padding: 3rem;
   position: relative;
   
   &::after {
     content: "";
-    background: url(${props => props.src});
+    background: url(${props => props.src}) no-repeat center / cover;
     opacity: 0.3;
     top: 0;
     left: 0;

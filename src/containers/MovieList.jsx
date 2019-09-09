@@ -3,6 +3,8 @@ import React from 'react';
 import useInfiniteScroll from './../utils/useInfiniteScroll';
 import MoviesItem from './MoviesItem';
 
+import { MoviesList } from './style.js';
+
 const MovieList = ({ movies, handleFetchMovies, currentPage, onHandleClickOnCard }) => {
   const [isFetching, setIsFetching] = useInfiniteScroll(fetchMoreListItems);
 
@@ -14,14 +16,14 @@ const MovieList = ({ movies, handleFetchMovies, currentPage, onHandleClickOnCard
   }
 
   return (
-    <div>
-      <ul className="movie-list">
+    <>
+      <MoviesList>
         {movies.map((movie, index) => (
           <MoviesItem key={index} className="movie-list__item" movie={movie} handleClickOnCard={onHandleClickOnCard}/>
         ))}
-      </ul>
+      </MoviesList>
       {isFetching && 'Fetching more list items...'}
-    </div>
+    </>
   );
 };
 
