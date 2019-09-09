@@ -1,13 +1,96 @@
-body {
-  margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen",
-    "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue",
-    sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+html {
+  box-sizing: border-box;
+  font-size: 16px;
 }
 
-code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
-    monospace;
+body,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p,
+ol,
+ul {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu',
+    'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  padding: 0;
+  font-weight: normal;
+}
+
+*,
+*:before,
+*:after {
+  box-sizing: inherit;
+}
+
+ol,
+ul {
+  list-style: none;
+  padding: 0;
+}
+
+.activeMovie {
+  transform: translateX(-40rem);
+}
+
+.addPadding {
+  padding-right: 40rem;
+}
+
+@media (min-width: 1440px) {
+  .addPadding {
+    padding-right: 0;
+  }
+}
+
+.bar {
+  float: left;
+  width: 0;
+  height: 0.5rem;
+  border-radius: 0.3rem;
+  transition: all 0.3s;
+}
+
+.loader {
+  animation: line 3s cubic-bezier(0.57, -0.49, 0.49, 1.28) infinite;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  margin: 1rem;
+  display: flex;
+}
+
+@keyframes line {
+  0% {
+    transform: translate(0, 0);
+    width: 0;
+  }
+
+  25% {
+    transform: translate(10rem, 0);
+    background-color: #46029e;
+    width: 15rem;
+  }
+
+  50% {
+    transform: translate(20rem, 0);
+    width: 0;
+  }
+
+  75% {
+    transform: translate(10rem, 0);
+    background-color: #46029e;
+    width: 15rem;
+  }
+
+  100% {
+    transform: translate(0, 0);
+    width: 0;
+  }
 }

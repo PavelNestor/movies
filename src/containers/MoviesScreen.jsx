@@ -1,14 +1,14 @@
 import React from 'react';
-import PropTypes from 'prop-types';
-import { connect, ReactReduxContext } from 'react-redux';
+import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 
 import { fetchMovies, fetchGenres, clearState } from '../store/movies/fetchMovies';
-import { getMoviesError, getMovies, getMoviesPending } from '../store/movies/reducer';
 
-// import LoadingSpinner from "./LoadingSpinner";
 import MovieList from './MovieList';
 import SearchPanel from './SearchPanel';
+import MovieComponent from './MovieComponent';
+
+import { Col, PageContent, Row } from './style.js';
 
 const initialState = {
   title: '',
@@ -29,8 +29,9 @@ const MovieScreen = ({
   genres
 }) => {
   const [searchValue, setSearchValue] = React.useState(initialState);
-  const [isFetching, setIsFetching] = React.useState(pending);
   const [moviesLsit, setMoviesList] = React.useState(movies);
+  const [selectedMovie, setSelectedMovie] = React.useState(null);
+  // const [isLoading, setIsLoading] = React.useState(false);
 
   React.useEffect(() => {
     fetchGenres();
@@ -44,8 +45,13 @@ const MovieScreen = ({
     event.preventDefault();
     clearState();
     setSearchValue(query);
+    setSelectedMovie(null);
     fetchMovies(query.title, 1, query.genre, query.sortBy);
-    // setMoviesList(movies);
+  };
+
+  const onHandleClickOnCard = (event, movie) => {
+    event.preventDefault();
+    setSelectedMovie({ ...movie });
   };
 
   const onHandleFetchMovies = page => {
@@ -53,24 +59,39 @@ const MovieScreen = ({
   };
 
   return (
-    <div className="movie-list-wrapper">
+    <PageContent className={selectedMovie !== null ? 'addPadding' : ''}>
       {error && <span className="movie-list-error">{error}</span>}
+      <Row>
+        <SearchPanel handleSubmit={onHandleSubmit} genres={genres} />
+        <Col>
+          {moviesLsit && (
+            <React.Fragment>
+              <MovieList
+                movies={moviesLsit}
+                handleFetchMovies={onHandleFetchMovies}
+                totalPages={totalPages}
+                currentPage={currentPage}
+                onHandleClickOnCard={onHandleClickOnCard}
+              />
 
-      <SearchPanel handleSubmit={onHandleSubmit} genres={genres} />
+              {pending && (
+                <div className="loader">
+                  <div className="bar"></div>
+                </div>
+              )}
+            </React.Fragment>
+          )}
 
-      <div>
-        {moviesLsit && moviesLsit.length ? (
-          <MovieList
-            movies={moviesLsit}
-            handleFetchMovies={onHandleFetchMovies}
-            totalPages={totalPages}
-            currentPage={currentPage}
-          />
-        ) : (
-          'Enter your query'
-        )}
-      </div>
-    </div>
+          {selectedMovie && (
+            <MovieComponent
+              movie={selectedMovie}
+              isSelected={selectedMovie !== null}
+              genres={genres}
+            />
+          )}
+        </Col>
+      </Row>
+    </PageContent>
   );
 };
 

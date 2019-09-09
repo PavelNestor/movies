@@ -18,9 +18,6 @@ const initialState = {
 };
 
 export const moviesReducer = (state = initialState, action) => {
-  console.log('moviesReducer => state ', state);
-  console.log('moviesReducer => action ', action);
-  
   switch (action.type) {
     case FETCH_MOVIES_PENDING:
       return {
@@ -28,8 +25,6 @@ export const moviesReducer = (state = initialState, action) => {
         pending: true
       };
     case FETCH_MOVIES_SUCCESS:
-      console.log('action.results', action.movies);
-      
       return {
         ...state,
         pending: false,
