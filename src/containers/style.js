@@ -48,7 +48,6 @@ export const ListItem = styled.div`
 `;
 
 export const MoviesList = styled.ul`
-  overflow-y: scroll;
 `;
 
 export const SelectWrapper = styled.div`
@@ -59,12 +58,13 @@ export const SelectWrapper = styled.div`
 `;
 
 export const Select = styled.select`
-  color: #77abfc;
-  border: none;
-  box-shadow: none;
   background: white;
   background-image: none;
+  border: none;
+  box-shadow: none;
+  color: #77abfc;
   font-size: .7rem;
+  height: 100%;
   padding: 5px 8px;
   text-transform: uppercase;
 
@@ -86,14 +86,15 @@ export const PageContent = styled.div`
   min-width: 1280px;
   margin: 0 auto;
   max-width: 1440px;
+  padding: 10rem 0 5rem;
 `;
 
 export const FormGroup = styled.div`
   display: flex;
   flex-direction: row;
   flex-wrap: wrap;
-  justify-content: flex-start;
-  padding: 1rem 0;
+  justify-content: center;
+  padding: 1rem 27rem 1rem 0 ;
 `;
 
 export const Row = styled.div`
@@ -107,7 +108,6 @@ export const Col = styled.div`
   flex-direction: row;
   flex-basis: 50%;
   padding: 0 1rem;
-  max-height: 100vh;
 `;
 
 export const Card = styled.div`
@@ -158,54 +158,88 @@ export const FooterWrapper = styled.div`
 
 export const CardFooter = styled.h6`
   margin: 0;
+  font-size: 1rem;
+  font-weight: bold;
+`;
+
+export const SearchWrapper = styled.div`
+  background: white;
+  left: 0;
+  padding: 0 1rem;
+  position: fixed;
+  right: 0;
+  top: 0;
+  z-index: 10;
 `;
 
 export const MoviePoster = styled.img`
-  max-height: 400px;
+  max-height: 40%;
+  width: 100%;
+  object-fit: cover;
+
+  @media (min-width: 1440px) {
+    max-height: 60%;
+  }
 `;
 
-export const MovieWrapper = styled.div`
-  position: relative;
-  transform: translateY(${props => props.scroll}px);
-  transition: .3s;
-  transition-delay: .2s;
-`;
-
-export const Movie = styled.div.attrs(props => ({
+export const MovieWrapper = styled.div.attrs(props => ({
   src: props.src || "/favicon.ico",
-  scroll: props.scroll || 0,
 }))`
+  position: fixed;
+  transition: translate cubic-bezier(0.07, 0.67, 0.91, 0.56) 3s .5s;
+  background: linear-gradient(to bottom, rgba(212,228,239,0.76) 0%, rgba(152,191,247,0.75) 65%, rgba(119,171,252,0.75) 100%), url(${props => props.src}) no-repeat center / cover;
+  width: 35%;
+  overflow: auto;
+  right: -40rem;
+  top: 0;
+  z-index: 11;
+`;
+
+export const Movie = styled.div`
   align-items: center;
   border: 1px solid #92bcfd;
-  border-radius: 6px;
-  background-repeat: no-repeat;
-  background-size: cover;
   display: flex;
   flex-direction: column;
-  max-height: 100vh;
   flex-basis: 50%;
+  height: 100vh;
   opacity: .8;
-  padding: 3rem;
+  padding: 1rem;
   position: relative;
-  
-  &::after {
-    content: "";
-    background: url(${props => props.src}) no-repeat center / cover;
-    opacity: 0.3;
-    top: 0;
-    left: 0;
-    bottom: 0;
-    right: 0;
-    position: absolute;
-    z-index: -1;
-}
+`;
+
+export const MovieText = styled.div`
+  background: white;
+  border-radius: 2rem;
+  padding: 2rem 1rem 1rem;
+  margin: -2rem 0 2rem;
+  width: 100%;
+  z-index: -1;
+`;
+
+export const MovieTextInfo = styled.h4`
+  background: white;
+  font-weight: bold;
+  padding: 1rem;
+  margin: 0;
+  width: 100%;
+`;
+
+export const MovieHeader = styled.div`
+  background: white;
+  border-radius: 2rem;
+  font-size: 2rem;
+  font-weight: bold;
+  display: block;
+  text-align: center;
+  padding: 2rem 1rem 3rem;
+  margin-bottom: -2rem;
+  width: 100%;
 `;
 
 export const Radio = styled.label`
-  margin: 0.5rem 0px;
+  margin: .5rem 0 .5rem 1rem;
   display: block;
   cursor: pointer;
-  flex-basis: 14rem;
 
   input {
     display: none;

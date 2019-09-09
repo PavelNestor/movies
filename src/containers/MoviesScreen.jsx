@@ -4,7 +4,6 @@ import { bindActionCreators } from 'redux';
 
 import { fetchMovies, fetchGenres, clearState } from '../store/movies/fetchMovies';
 
-// import LoadingSpinner from "./LoadingSpinner";
 import MovieList from './MovieList';
 import SearchPanel from './SearchPanel';
 import MovieComponent from './MovieComponent';
@@ -31,13 +30,8 @@ const MovieScreen = ({
 }) => {
   const [searchValue, setSearchValue] = React.useState(initialState);
   const [moviesLsit, setMoviesList] = React.useState(movies);
-  const [selectedMovie, setselectedMovie] = React.useState(null);
-  const [scroll, setScroll] = React.useState(0);
-
-  React.useEffect(() => {
-    window.addEventListener('scroll', scrollPosition);
-    return () => scrollPosition;
-  });
+  const [selectedMovie, setSelectedMovie] = React.useState(null);
+  // const [isLoading, setIsLoading] = React.useState(false);
 
   React.useEffect(() => {
     fetchGenres();
@@ -47,22 +41,17 @@ const MovieScreen = ({
     setMoviesList([...movies]);
   }, [movies]);
 
-  const scrollPosition = () => {
-    const winScroll = document.body.scrollTop || document.documentElement.scrollTop;
-    setScroll(winScroll);
-  };
-
   const onHandleSubmit = (event, query) => {
     event.preventDefault();
     clearState();
     setSearchValue(query);
-    setselectedMovie(null);
+    setSelectedMovie(null);
     fetchMovies(query.title, 1, query.genre, query.sortBy);
   };
 
   const onHandleClickOnCard = (event, movie) => {
     event.preventDefault();
-    setselectedMovie({ ...movie });
+    setSelectedMovie({ ...movie });
   };
 
   const onHandleFetchMovies = page => {
@@ -70,23 +59,36 @@ const MovieScreen = ({
   };
 
   return (
-    <PageContent>
+    <PageContent className={selectedMovie !== null ? 'addPadding' : ''}>
       {error && <span className="movie-list-error">{error}</span>}
       <Row>
-        <Col>
-          <SearchPanel handleSubmit={onHandleSubmit} genres={genres} />
-        </Col>
+        <SearchPanel handleSubmit={onHandleSubmit} genres={genres} />
         <Col>
           {moviesLsit && (
-            <MovieList
-              movies={moviesLsit}
-              handleFetchMovies={onHandleFetchMovies}
-              totalPages={totalPages}
-              currentPage={currentPage}
-              onHandleClickOnCard={onHandleClickOnCard}
+            <React.Fragment>
+              <MovieList
+                movies={moviesLsit}
+                handleFetchMovies={onHandleFetchMovies}
+                totalPages={totalPages}
+                currentPage={currentPage}
+                onHandleClickOnCard={onHandleClickOnCard}
+              />
+
+              {pending && (
+                <div className="loader">
+                  <div className="bar"></div>
+                </div>
+              )}
+            </React.Fragment>
+          )}
+
+          {selectedMovie && (
+            <MovieComponent
+              movie={selectedMovie}
+              isSelected={selectedMovie !== null}
+              genres={genres}
             />
           )}
-          {selectedMovie && <MovieComponent movie={selectedMovie} />}
         </Col>
       </Row>
     </PageContent>
