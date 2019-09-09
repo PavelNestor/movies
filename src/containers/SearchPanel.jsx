@@ -2,6 +2,8 @@ import React from 'react';
 
 import { Button, Input } from './style.js';
 
+import { Radio, Select, SelectWrapper, FormGroup } from './style.js';
+
 const initialState = {
   sortBy: '',
   genre: '',
@@ -13,8 +15,8 @@ const SearchPanel = ({ handleSubmit, genres }) => {
   const [genresList, setGenresList] = React.useState([{ name: 'choose a genre' }]);
 
   React.useEffect(() => {
-    setGenresList([ ...genresList, ...genres]);
-  }, [genres])
+    setGenresList([...genresList, ...genres]);
+  }, [genres]);
 
   const handleSortOrder = ({ currentTarget }) => {
     const sortOrder = currentTarget.value;
@@ -33,34 +35,64 @@ const SearchPanel = ({ handleSubmit, genres }) => {
 
   return (
     <form onSubmit={event => handleSubmit(event, query)}>
-      <Input type="text" name="name" onChange={handleSearch} />
-      <label htmlFor="date-order-old">
-        <input type="radio" id="date-order-old" name="sort-by" value="release_date.asc" onChange={handleSortOrder}></input>
-        old first
-      </label>
-      <label htmlFor="date-order-new">
-        <input type="radio" id="date-order-new" name="sort-by" value="release_date.desc" onChange={handleSortOrder}></input>
-        new first
-      </label>
-      <label htmlFor="rating-order-less">
-        <input type="radio" id="rating-order-more" name="sort-by" value="popularity.asc" onChange={handleSortOrder}></input>
-        less popular first
-      </label>
-      <label htmlFor="rating-order-more">
-        <input type="radio" id="rating-order-more" name="sort-by" value="popularity.desc" onChange={handleSortOrder}></input>
-        more popular first
-      </label>
+      <FormGroup>
+        <Radio htmlFor="date-order-old">
+          <input
+            type="radio"
+            id="date-order-old"
+            name="sort-by"
+            value="release_date.asc"
+            onChange={handleSortOrder}
+          ></input>
+          <span>old first</span>
+        </Radio>
+        <Radio htmlFor="date-order-new">
+          <input
+            type="radio"
+            id="date-order-new"
+            name="sort-by"
+            value="release_date.desc"
+            onChange={handleSortOrder}
+          ></input>
+          <span>new first</span>
+        </Radio>
+        <Radio htmlFor="rating-order-less">
+          <input
+            type="radio"
+            id="rating-order-less"
+            name="sort-by"
+            value="popularity.asc"
+            onChange={handleSortOrder}
+          ></input>
+          <span>less popular first</span>
+        </Radio>
+        <Radio htmlFor="rating-order-more">
+          <input
+            type="radio"
+            id="rating-order-more"
+            name="sort-by"
+            value="popularity.desc"
+            onChange={handleSortOrder}
+          ></input>
+          <span>more popular first</span>
+        </Radio>
+      </FormGroup>
 
-      <select onChange={handleSelectGenre}>
-        {genresList &&
-          genresList.map((item, index) => (
-            <option key={index} value={item.id}>
-              {item.name}
-            </option>
-          ))}
-      </select>
+      <FormGroup>
+        <Input type="text" name="name" onChange={handleSearch} placeholder="Enter your query" />
+        <SelectWrapper>
+          <Select onChange={handleSelectGenre}>
+            {genresList &&
+              genresList.map((item, index) => (
+                <option key={index} value={item.id}>
+                  {item.name}
+                </option>
+              ))}
+          </Select>
+        </SelectWrapper>
 
-      <Button type="submit">Search</Button>
+        <Button type="submit">Search</Button>
+      </FormGroup>
     </form>
   );
 };
