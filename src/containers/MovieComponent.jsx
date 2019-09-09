@@ -1,8 +1,9 @@
 import React from 'react';
 
-import { CardHeader, CardText, Movie, MoviePoster, MovieWrapper } from './style.js';
+import { MovieHeader, MovieTextInfo, Movie, MoviePoster, MovieWrapper, MovieText } from './style.js';
 
-const MovieComponent = ({ movie, scroll }) => {
+const MovieComponent = ({ genres, movie, isSelected }) => {
+
   const generatePosterUrl = filePath => {
     if (filePath === null) {
       return '/favicon.ico';
@@ -11,11 +12,18 @@ const MovieComponent = ({ movie, scroll }) => {
   };
 
   return (
-    <MovieWrapper  scroll={scroll}>
+    <MovieWrapper className={isSelected ? 'activeMovie' : ''} src={generatePosterUrl(movie.poster_path)}>
       <Movie src={generatePosterUrl(movie.poster_path)}>
-        <CardHeader>{movie.title}</CardHeader>
+        <MovieHeader>{movie.title}</MovieHeader>
         <MoviePoster src={generatePosterUrl(movie.poster_path)} alt={movie.title} />
-        <CardText>{movie.overview}</CardText>
+        <MovieTextInfo>Reliase Date: {movie.release_date}</MovieTextInfo>
+        <MovieTextInfo>
+          <ul>
+            {movie.genre_ids.map(item => <li key={item}>{genres.find(genre => genre.id === item).name}</li>)}
+          </ul>
+        </MovieTextInfo>
+        <MovieTextInfo>Rating: {movie.vote_average}</MovieTextInfo>
+        <MovieText>{movie.overview}</MovieText>
       </Movie>
     </MovieWrapper>
   );
