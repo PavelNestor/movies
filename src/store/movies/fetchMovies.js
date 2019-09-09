@@ -8,7 +8,7 @@ import {
   clearStateSuccess
 } from "./actions";
 
-function fetchMovies(query = '', page = 1, genre = '', sortBy = '&sort_by=release_date.desc', ratingOrder = '') {
+function fetchMovies(query = '', page = 1, genre = '', sortBy = '&sort_by=release_date.desc') {
   let url = '';
 
   if (query !== '') {
@@ -17,8 +17,6 @@ function fetchMovies(query = '', page = 1, genre = '', sortBy = '&sort_by=releas
     url = `https://api.themoviedb.org/3/discover/movie?page=${page}${genre}&include_adult=false${sortBy}&language=en-US&api_key=6563b97fda57eb1e67c17820ade05783`
   }
 
-  console.log('URL',url);
-  
   return dispatch => {
     dispatch(fetchMoviesPending());
     fetch(
